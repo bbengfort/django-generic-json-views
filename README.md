@@ -46,7 +46,7 @@ output generic JSON data as needed:
     class JSONTime(JSONDataView):
         
         def get_context_data(self, **kwargs):
-            context = super(JSONTime, self).get_context_data(**kwargs):
+            context = super(JSONTime, self).get_context_data(**kwargs)
             context['current_time'] = datetime.now.strftime("%c")
             return context 
 
