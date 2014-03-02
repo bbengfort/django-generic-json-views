@@ -1,3 +1,22 @@
+# genjson.views
+# Generic View classes for JSON in  Django
+#
+# Author:   Benjamin Bengfort <benjamin@bengfort.com>
+# Created:  Tue Jun 4 12:16:51 2013 -0400
+#
+# Copyright (C) 2014 Bengfort.com
+# For license information, see LICENSE.txt
+#
+# ID: views.py [] benjamin@bengfort.com $
+
+"""
+Generic View classes for JSON in  Django
+"""
+
+##########################################################################
+## Imports
+##########################################################################
+
 from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
@@ -6,8 +25,13 @@ from django.utils import simplejson
 from django.utils.encoding import force_unicode
 from django.db.models.base import ModelBase
 from django.db.models import ManyToManyField
-from django.http import HttpResponseNotAllowed, HttpResponse 
+from django.http import HttpResponseNotAllowed, HttpResponse
 from django.core.exceptions import ImproperlyConfigured
+
+##########################################################################
+## JSON serialization helpers
+##########################################################################
+
 
 def dumps(content, json_opts={}):
     """
@@ -18,25 +42,27 @@ def dumps(content, json_opts={}):
 
     return simplejson.dumps(content, **json_opts)
 
+
 class LazyJSONEncoder(simplejson.JSONEncoder):
-    """ 
+    """
     A JSONEncoder subclass that handles querysets and model objects.
     If the model object has a "serialize" method that returns a dictionary,
-    then this method is used, else, it attempts to serialize fields. 
+    then this method is used, else, it attempts to serialize fields.
     """
 
     def default(self, obj):
         # This handles querysets and other iterable types
         try:
             iterable = iter(obj)
-        except TypeError: 
+        except TypeError:
             pass
         else:
-            return list(iterable) 
+            return list(iterable)
 
         # This handles Models
         if isinstance(obj.__class__, ModelBase):
-            if hasattr(obj, 'serialize') and callable(getattr(obj, 'serialize')):
+            if hasattr(obj, 'serialize') and \
+               callable(getattr(obj, 'serialize')):
                 return obj.serialize()
             return self.serialize_model(obj)
 
@@ -50,34 +76,43 @@ class LazyJSONEncoder(simplejson.JSONEncoder):
         return super(LazyJSONEncoder, self).default(obj)
 
     def serialize_model(self, obj):
-        tmp = { }
+        tmp = {}
+
         many = [f.name for f in obj._meta.many_to_many]
-        for field in obj._meta.get_all_field_names( ):
+        for field in obj._meta.get_all_field_names():
             if len(many) > 0 and field in many:
                 many.remove(field)
-                tmp[field] = getattr(obj, field).all( )
+                tmp[field] = getattr(obj, field).all()
             else:
                 tmp[field] = getattr(obj, field, None)
         return tmp
 
+##########################################################################
+## Response Class
+##########################################################################
+
+
 class JSONResponse(HttpResponse):
 
-    def __init__(self, content='', json_opts={}, mimetype="application/json", *args, **kwargs):
-        
+    def __init__(self, content='', json_opts={},
+                 mimetype="application/json", *args, **kwargs):
+
         if content:
             content = dumps(content, json_opts)
         else:
-            content = dumps([ ], json_opts)
+            content = dumps([], json_opts)
 
-        super(JSONResponse, self).__init__(content,mimetype,*args,**kwargs)
+        super(JSONResponse, self).__init__(content, mimetype,
+                                           *args, **kwargs)
         self['Cache-Control'] = 'max-age=0,no-cache,no-store'
 
     @property
     def json(self):
         return simplejson.loads(self.content)
 
+
 class JSONResponseMixin(object):
-    
+
     def render_to_response(self, context, *args, **kwargs):
         return JSONResponse(context, *args, **kwargs)
 
@@ -86,14 +121,20 @@ class JSONResponseMixin(object):
         if duplicate in context:
             # Search to ensure that this key is in fact duplicated
             for key, val in context.items():
-                if key == duplicate: continue           # Skip the duplicate object
+                if key == duplicate:        # Skip the duplicate object
+                    continue
                 if val == context[duplicate]:
                     del context[duplicate]
                     break
-    
+
         # Django 1.5 also adds the View...
         context.pop('view')
         return context
+
+##########################################################################
+## Views
+##########################################################################
+
 
 class JSONDataView(JSONResponseMixin, View):
 
@@ -104,6 +145,7 @@ class JSONDataView(JSONResponseMixin, View):
         context = self.get_context_data(**kwargs)
         return self.render_to_response(context)
 
+
 class JSONDetailView(JSONResponseMixin, BaseDetailView):
     """
     Override get method to allow access from querystrings for AJAX calls.
@@ -111,13 +153,13 @@ class JSONDetailView(JSONResponseMixin, BaseDetailView):
 
     def get(self, request, **kwargs):
         """
-        This method does not allow multiple parameters in the query string, 
-        so a normal dictionary rather than a QueryDict is necessary. 
+        This method does not allow multiple parameters in the query string,
+        so a normal dictionary rather than a QueryDict is necessary.
 
         The development version has a QuerySet.dict method-- but not 1.3, so
-        we have to do this manually until the new version comes out. 
+        we have to do this manually until the new version comes out.
         """
-        querydict = dict([(k,v) for k,v in request.GET.iteritems()])
+        querydict = dict([(k, v) for k, v in request.GET.iteritems()])
         self.kwargs.update(querydict)
         kwargs.update(querydict)
         return super(JSONDetailView, self).get(request, **kwargs)
@@ -126,18 +168,20 @@ class JSONDetailView(JSONResponseMixin, BaseDetailView):
         context = super(JSONDetailView, self).get_context_data(**kwargs)
         return self.remove_duplicate_obj(context)
 
+
 class JSONListView(JSONResponseMixin, BaseListView):
 
     def get_context_data(self, **kwargs):
         context = super(JSONListView, self).get_context_data(**kwargs)
         return self.remove_duplicate_obj(context, duplicate="object_list")
 
+
 class PaginatedJSONListView(JSONListView):
     """
     Provides some helper view methods and a default pagination for the
     ListView -- including removal of pagination data from the json and a
-    json return of the total number of results and pages that will be 
-    returned on the submission of a get request. 
+    json return of the total number of results and pages that will be
+    returned on the submission of a get request.
     """
 
     paginate_by = 10
@@ -152,7 +196,7 @@ class PaginatedJSONListView(JSONListView):
 
     def get(self, request, *args, **kwargs):
         """
-        On GET if the parameter defined by ``count_query`` is in the 
+        On GET if the parameter defined by ``count_query`` is in the
         request, then set the count only parameter to True. Note that the
         method ``get_count_only`` can override or use this value as
         required -- but the interface is to set the value on the instance.
@@ -164,8 +208,8 @@ class PaginatedJSONListView(JSONListView):
     def get_context_data(self, **kwargs):
         """
         Removes paginator objects and instead supplies the pages and the
-        count data as part of the paginated framework. Leaves in the 
-        ``is_paginated`` boolean value. 
+        count data as part of the paginated framework. Leaves in the
+        ``is_paginated`` boolean value.
 
         Also tests to see if get_count_only is True -- if so, it returns
         only the pages and the count rather than the entire context.
@@ -187,17 +231,17 @@ class PaginatedJSONListView(JSONListView):
             # Honestly, this should never happen.
             page  = 1
             pages = 1
-            count = self.get_queryset().count()  # This should be the object_list that comes through... 
+            count = self.get_queryset().count()  # Should be the object_list
             ispag = False
             ppage = count
             cpage = 1
 
         if count_only:
-            return { 'pages':pages, 
-                     'count':count, 
-                     'per_page': ppage,
-                     'is_paginated': ispag,
-                     'current': cpage, }
+            return {'pages': pages,
+                    'count': count,
+                    'per_page': ppage,
+                    'is_paginated': ispag,
+                    'current': cpage}
         else:
             context['pages'] = pages
             context['count'] = count
@@ -205,21 +249,22 @@ class PaginatedJSONListView(JSONListView):
 
         return context
 
+
 class JSONFormView(JSONResponseMixin, BaseFormView):
     """
-    An attempt to integrate a JSONView with a FormView. 
+    An attempt to integrate a JSONView with a FormView.
 
     Basically, the idea is this- JSON views will not require a GET method.
     Since POST is the only concern, we need to pass the post data into
-    the form, then respond with JSON data instead of Form data. 
+    the form, then respond with JSON data instead of Form data.
 
     Several Overrides are the attempt to manipulate the BaseFormView to
-    respond with JSON data, rather than starting from scratch. 
+    respond with JSON data, rather than starting from scratch.
     """
 
     def get_form_class(self):
         """
-        There will be issues if form_class is None, so override this 
+        There will be issues if form_class is None, so override this
         method to check and see if we have one or not.
         """
         form_class = super(JSONFormView, self).get_form_class()
@@ -231,7 +276,7 @@ class JSONFormView(JSONResponseMixin, BaseFormView):
 
     def get_success_url(self):
         """
-        Overridden to ensure that JSON data gets returned, rather 
+        Overridden to ensure that JSON data gets returned, rather
         than HttpResponseRedirect, which is bad.
         """
         return None
@@ -257,7 +302,7 @@ class JSONFormView(JSONResponseMixin, BaseFormView):
         @note: See form_valid for more discussion on the JSON flag.
         """
         context = self.get_context_data(success=False)
-        context['errors'] = form.errors 
+        context['errors'] = form.errors
         return self.render_to_response(context)
 
     def get(self, request, *args, **kwargs):
@@ -266,8 +311,8 @@ class JSONFormView(JSONResponseMixin, BaseFormView):
 
         JSON Forms are intrinsinctly POST driven things, a GET makes
         no sense in the context of a form. (What would you get?). For
-        Normal HTTP, you would pass back an empty form, but that's 
+        Normal HTTP, you would pass back an empty form, but that's
         pretty usesless for JSON. So we pwn this entire method right
         off the bat to ensure no screwiness or excessive net traffic.
         """
-        return HttpResponseNotAllowed(['GET',])
+        return HttpResponseNotAllowed(['GET', ])
