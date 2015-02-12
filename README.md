@@ -1,7 +1,7 @@
-[![Stories in Ready](https://badge.waffle.io/bbengfort/django-generic-json-views.png?label=ready&title=Ready)](https://waffle.io/bbengfort/django-generic-json-views)
 # Django Generic JSON Views
 
-[![Build Status](https://travis-ci.org/bbengfort/django-generic-json-views.svg)](https://travis-ci.org/bbengfort/django-generic-json-views)
+[![Stories in Ready](https://badge.waffle.io/bbengfort/django-generic-json-views.png?label=ready&title=Ready)](https://waffle.io/bbengfort/django-generic-json-views)
+ [![Build Status](https://travis-ci.org/bbengfort/django-generic-json-views.svg)](https://travis-ci.org/bbengfort/django-generic-json-views)
 
 **Class based generic views that render JSON data.**
 

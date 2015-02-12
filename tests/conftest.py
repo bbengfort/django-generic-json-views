@@ -20,6 +20,7 @@ def pytest_configure():
     from django.conf import settings
 
     settings.configure(
+        DEBUG=True,
         DEBUG_PROPAGATE_EXCEPTIONS=True,
         DATABASES={'default': {'ENGINE': 'django.db.backends.sqlite3',
                                'NAME': ':memory:'}},
