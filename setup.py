@@ -1,27 +1,84 @@
-from setuptools import setup, find_packages
+#!/usr/bin/env python
+# setup
+# Setup script for django-generic-json-views
+#
+# Author:   Benjamin Bengfort <benjamin@bengfort.com>
+# Created:  Thu Feb 12 12:31:28 2015 -0500
+#
+# Copyright (C) 2014 Bengfort.com
+# For license information, see LICENSE.txt
+#
+# ID: setup.py [] benjamin@bengfort.com $
 
-version = __import__('genjson').__version__
+"""
+Setup script for django-generic-json-views
+"""
 
-setup(
-    name="django-generic-json-views",
-    version=version,
-    url='https://github.com/bbengfort/django-generic-json-views',
-    license='Apache',
-    description='Class based generic views that render JSON data.',
-    long_description=open('README.md').read(),
-    author='Benjamin Bengfort',
-    author_email='benjamin@bengfort.com',
-    maintainer='Benjamin Bengfort',
-    maintainer_email='benjamin@bengfort.com',
-    packages=find_packages(),
-    include_package_data=True,
-    zip_safe=False,
-    classifiers=[
-        'Framework :: Django',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Internet :: WWW/HTTP',
-    ],
+##########################################################################
+## Imports
+##########################################################################
+
+try:
+    from setuptools import setup
+    from setuptools import find_packages
+except ImportError:
+    raise ImportError("Could not import \"setuptools\"."
+                      "Please install the setuptools package.")
+
+##########################################################################
+## Package Information
+##########################################################################
+
+version  = __import__('json_views').__version__
+
+## Discover the packages
+packages = find_packages(where=".", exclude=("tests", "docs", "venv"))
+
+## Load the requirements
+requires = []
+with open('requirements.txt', 'r') as reqfile:
+    for line in reqfile:
+        requires.append(line.strip())
+
+## Define the classifiers
+classifiers = (
+    'Framework :: Django',
+    'Intended Audience :: Developers',
+    'License :: OSI Approved :: Apache Software License',
+    'Operating System :: OS Independent',
+    'Programming Language :: Python',
+    'Topic :: Internet :: WWW/HTTP',
 )
+
+## Define the keywords
+keywords = ('django', 'json', 'views', 'generic', 'class library')
+
+## Define the description
+long_description = ""
+
+## Define the configuration
+config = {
+    "name": "django-generic-json-views",
+    "version": version,
+    "url": 'https://github.com/bbengfort/django-generic-json-views',
+    "license": 'Apache',
+    "description": 'Class based generic views that render JSON data.',
+    # "long_description": long_description,
+    "author": 'Benjamin Bengfort',
+    "author_email": 'benjamin@bengfort.com',
+    "maintainer": 'Benjamin Bengfort',
+    "maintainer_email": 'benjamin@bengfort.com',
+    "packages": packages,
+    "install_requires": requires,
+    "classifiers": classifiers,
+    "keywords": keywords,
+    "zip_safe": True,
+    "scripts": [],
+}
+
+##########################################################################
+## Run setup script
+##########################################################################
+
+if __name__ == '__main__':
+    setup(**config)

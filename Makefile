@@ -17,7 +17,7 @@ clean:
 	-rm -rf .coverage
 	-rm -rf build
 	-rm -rf dist
-	-rm -rf memorandi/*.egg-info
+	-rm -rf $(PROJECT)/*.egg-info
 
 # Targets for testing
 test:
