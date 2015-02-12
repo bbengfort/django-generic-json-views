@@ -1,0 +1,12 @@
+site_name: Django Generic JSON Views
+repo_url: https://github.com/bbengfort/django-generic-json-views
+site_description: "Class based Django generic views that render JSON data."
+site_author: "Benjamin Bengfort"
+
+# Documentation layout
+pages:
+- ['index.md', 'Introduction']
+
+# Build Settings
+docs_dir: "."
+site_dir: "site"

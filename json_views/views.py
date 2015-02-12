@@ -1,4 +1,4 @@
-# genjson.views
+# json_views.views
 # Generic View classes for JSON in  Django
 #
 # Author:   Benjamin Bengfort <benjamin@bengfort.com>
@@ -21,12 +21,16 @@ from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 from django.views.generic.edit import BaseFormView
-from django.utils import simplejson
 from django.utils.encoding import force_unicode
 from django.db.models.base import ModelBase
 from django.db.models import ManyToManyField
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.core.exceptions import ImproperlyConfigured
+
+try:
+    import json
+except ImportError:
+    from django.utils import simplejson as json
 
 ##########################################################################
 ## JSON serialization helpers
@@ -35,15 +39,15 @@ from django.core.exceptions import ImproperlyConfigured
 
 def dumps(content, json_opts={}):
     """
-    Replaces simplejson.dumps with our own custom encoder
+    Replaces json.dumps with our own custom encoder
     """
     json_opts['ensure_ascii'] = json_opts.get('ensure_ascii', False)
     json_opts['cls'] = json_opts.get('cls', LazyJSONEncoder)
 
-    return simplejson.dumps(content, **json_opts)
+    return json.dumps(content, **json_opts)
 
 
-class LazyJSONEncoder(simplejson.JSONEncoder):
+class LazyJSONEncoder(json.JSONEncoder):
     """
     A JSONEncoder subclass that handles querysets and model objects.
     If the model object has a "serialize" method that returns a dictionary,
@@ -108,7 +112,7 @@ class JSONResponse(HttpResponse):
 
     @property
     def json(self):
-        return simplejson.loads(self.content)
+        return json.loads(self.content)
 
 
 class JSONResponseMixin(object):

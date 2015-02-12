@@ -1,7 +1,5 @@
 # Django Generic JSON Views
 
-[![Build Status](https://travis-ci.org/bbengfort/django-generic-json-views.svg)](https://travis-ci.org/bbengfort/django-generic-json-views)
-
 **Class based generic views that render JSON data.**
 
 The `django.views.generic` package has several generic class based views

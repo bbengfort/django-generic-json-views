@@ -1,4 +1,4 @@
-# genjson
+# json_views
 # Generic JSON Views.
 #
 # Author:   Benjamin Bengfort <benjamin@bengfort.com>
@@ -20,9 +20,9 @@ Generic JSON Views.
 __version_info__ = {
     'major': 0,
     'minor': 6,
-    'micro': 1,
+    'micro': 2,
     'releaselevel': 'beta',
-    'serial': 1
+    'serial': 2
 }
 
 

@@ -1,3 +1,4 @@
-Django==1.5.1
-nose==1.3.0
+# Requirements for testing
+Django==1.7.4
+nose==1.3.4
 wsgiref==0.1.2
