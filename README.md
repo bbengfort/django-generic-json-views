@@ -17,6 +17,8 @@ ones specified the in the `generic` package to either serialize a model
 or to provide other context data in the View logic. These generic views
 allow that, and correctly render JSON data with the correct HTTP Headers.
 
+More documentation can be found at Read the Docs: [Django Generic JSON Views Documentation](http://django-generic-json-views.readthedocs.org/en/latest/)
+
 ## Installation
 
 The easiest way to install this library is to use `pip` as follows:
