@@ -37,7 +37,7 @@ except ImportError:
 ##########################################################################
 
 
-def dumps(content, json_opts={}):
+def dumps(content, **json_opts):
     """
     Replaces json.dumps with our own custom encoder
     """
@@ -102,9 +102,9 @@ class JSONResponse(HttpResponse):
                  mimetype="application/json", *args, **kwargs):
 
         if content:
-            content = dumps(content, json_opts)
+            content = dumps(content, **json_opts)
         else:
-            content = dumps([], json_opts)
+            content = dumps([], **json_opts)
 
         super(JSONResponse, self).__init__(content, mimetype,
                                            *args, **kwargs)
