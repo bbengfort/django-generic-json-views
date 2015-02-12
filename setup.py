@@ -61,7 +61,7 @@ config = {
     "name": "django-generic-json-views",
     "version": version,
     "url": 'https://github.com/bbengfort/django-generic-json-views',
-    "download_url": "https://github.com/bbengfort/django-generic-json-views/tarball/v0.6.2",
+    "download_url": "https://github.com/bbengfort/django-generic-json-views/tarball/v0.6.4",
     "license": 'Apache',
     "description": 'Class based generic views that render JSON data.',
     "long_description": long_description,
