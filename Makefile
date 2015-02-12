@@ -2,7 +2,7 @@
 SHELL := /bin/sh
 
 # Set important Paths
-PROJECT := genjson
+PROJECT := django_generic_json_views
 LOCALPATH := $(CURDIR)/$(PROJECT)
 PYTHONPATH := $(LOCALPATH)/
 PYTHON_BIN := $(VIRTUAL_ENV)/bin
@@ -17,7 +17,7 @@ clean:
 	-rm -rf .coverage
 	-rm -rf build
 	-rm -rf dist
-	-rm -rf $(PROJECT)/*.egg-info
+	-rm -rf $(PROJECT).egg-info
 
 # Targets for testing
 test:
