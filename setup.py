@@ -54,16 +54,17 @@ classifiers = (
 keywords = ('django', 'json', 'views', 'generic', 'class library')
 
 ## Define the description
-long_description = ""
+long_description = "These are simple generic class-based views for rendering JSON without the muss and fuss of Django Rest Framework or similar (although, if you're doing an API, then that library is far better than this one! Documentation can be found at Read the Docs: http://django-generic-json-views.readthedocs.org/en/latest/"
 
 ## Define the configuration
 config = {
     "name": "django-generic-json-views",
     "version": version,
     "url": 'https://github.com/bbengfort/django-generic-json-views',
+    "download_url": "https://github.com/bbengfort/django-generic-json-views/tarball/v0.6.2",
     "license": 'Apache',
     "description": 'Class based generic views that render JSON data.',
-    # "long_description": long_description,
+    "long_description": long_description,
     "author": 'Benjamin Bengfort',
     "author_email": 'benjamin@bengfort.com',
     "maintainer": 'Benjamin Bengfort',
