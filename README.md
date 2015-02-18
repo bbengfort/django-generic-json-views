@@ -173,3 +173,16 @@ class UserProfile(models.Model):
                 pass
         return klass(**data)
 ```
+
+## Pushing to PyPi
+
+A couple of notes on pushing this software to PyPi:
+
+1. Version Bump    
+    1. Change the version in `__init__`.py
+    2. Change the version in tests
+    3. Change the download URL in setup.py 
+2. Tag the release `git tag -a v0.x.x`
+3. Push to Github
+4. Register `python setup.py register -r pypi`
+5. Upload `python setup.py sdist upload -r pypi`  
