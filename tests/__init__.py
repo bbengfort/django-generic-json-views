@@ -45,4 +45,4 @@ class InitializationTests(unittest.TestCase):
         Reminder to bump version
         """
         import json_views
-        self.assertEqual(json_views.get_version(), "0.6.4")
+        self.assertEqual(json_views.get_version(), "0.6.5")
