@@ -19,6 +19,14 @@ Testing package for the Django Generic JSON views library
 
 import unittest
 
+from .conftest import pytest_configure
+
+##########################################################################
+## Configure Testing Environment
+##########################################################################
+
+pytest_configure()
+
 ##########################################################################
 ## Initialization tests
 ##########################################################################

@@ -41,11 +41,16 @@ def dumps(content, **json_opts):
     """
     Replaces json.dumps with our own custom encoder
     """
-    json_opts['ensure_ascii'] = json_opts.get('ensure_ascii', False)
-    json_opts['cls'] = json_opts.get('cls', LazyJSONEncoder)
 
-    return json.dumps(content, **json_opts)
+    opts = {
+        'ensure_ascii': False,
+        'cls': LazyJSONEncoder,
+        'encoding': 'utf-8',
+    }
 
+    opts.update(json_opts)
+
+    return json.dumps(content, **opts)
 
 class LazyJSONEncoder(json.JSONEncoder):
     """
@@ -99,15 +104,19 @@ class LazyJSONEncoder(json.JSONEncoder):
 class JSONResponse(HttpResponse):
 
     def __init__(self, content='', json_opts={},
-                 mimetype="application/json", *args, **kwargs):
+                 mimetype="application/json",
+                 encoding="utf-8", *args, **kwargs):
 
         if content:
             content = dumps(content, **json_opts)
         else:
             content = dumps([], **json_opts)
 
-        super(JSONResponse, self).__init__(content, mimetype,
+
+        content_type = "%s; charset=%s" % (mimetype, encoding)
+        super(JSONResponse, self).__init__(content, content_type,
                                            *args, **kwargs)
+
         self['Cache-Control'] = 'max-age=0,no-cache,no-store'
 
     @property
@@ -117,8 +126,19 @@ class JSONResponse(HttpResponse):
 
 class JSONResponseMixin(object):
 
+    mimetype = "application/json"
+    format   = "json"
+    encoding = "utf-8"
+
     def render_to_response(self, context, *args, **kwargs):
-        return JSONResponse(context, *args, **kwargs)
+
+        opts   = {
+            'mimetype': self.mimetype,
+            'encoding': self.encoding,
+        }
+        opts.update(kwargs)
+
+        return JSONResponse(context, *args, **opts)
 
     def remove_duplicate_obj(self, context, duplicate="object", **kwargs):
         # Check if the duplicate key is in the context

@@ -21,9 +21,6 @@ import datetime
 import unittest
 
 from json_views.views import *
-from .conftest import pytest_configure
-
-pytest_configure()
 
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
