@@ -33,6 +33,8 @@ Alternatively you can download the source code and run the following:
 $ python setup.py install
 ```
 
+You can import from the `json_views.views` module.
+
 Otherwise copy the views.py file to a utils directory in your Django Project and import it correctly from there.
 
 ## Basic Usage
@@ -55,6 +57,9 @@ These classes all provide the following functionality:
 The most simple example is the `JSONDataView` which will allow you to output generic JSON data as needed:
 
 ```python
+from json_views.views import JSONDataView
+
+
 class JSONTime(JSONDataView):
 
     def get_context_data(self, **kwargs):
@@ -68,6 +73,9 @@ use the `JSONDetailView` -- note that this view can be used for both
 serialization and deserialization as noted in the section below.
 
 ```python
+from json_views.views import JSONDetailView
+
+
 class CustomerJSON(JSONDetailView):
 
     model = Customer
@@ -77,6 +85,9 @@ Many JSON views are centered around lists, hence the `JSONListView` and
 the `PaginatedJSONListView`.
 
 ```python
+from json_views.views import JSONListView
+
+
 class ProductsJSON(JSONListView):
 
     model = Product
@@ -100,6 +111,9 @@ object and returns the following data:
 An example of using this view is:
 
 ```python
+from json_views.views import PaginatedJSONListView
+
+
 class PaginatedProducts(PaginatedJSONListView):
 
     paginate_by = 10
@@ -120,6 +134,9 @@ rather than waiting for HTTP POST data, this is how you would do AJAX login
 forms. Note that GET requests are not allowed.
 
 ```python
+from json_views.views import JSONFormView
+
+
 class LoginForm(JSONFormView):
 
     form = LoginForm
