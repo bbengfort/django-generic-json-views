@@ -57,6 +57,7 @@ These classes all provide the following functionality:
 The most simple example is the `JSONDataView` which will allow you to output generic JSON data as needed:
 
 ```python
+from datetime import datetime
 from json_views.views import JSONDataView
 
 
@@ -64,7 +65,7 @@ class JSONTime(JSONDataView):
 
     def get_context_data(self, **kwargs):
         context = super(JSONTime, self).get_context_data(**kwargs)
-        context['current_time'] = datetime.now.strftime("%c")
+        context['current_time'] = datetime.now().strftime("%c")
         return context
 ```
 
