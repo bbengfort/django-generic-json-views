@@ -21,7 +21,7 @@ from django.views.generic import View
 from django.views.generic.detail import BaseDetailView
 from django.views.generic.list import BaseListView
 from django.views.generic.edit import BaseFormView
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.db.models.base import ModelBase
 from django.db.models import ManyToManyField
 from django.http import HttpResponseNotAllowed, HttpResponse
@@ -31,6 +31,8 @@ try:
     import json
 except ImportError:
     from django.utils import simplejson as json
+
+from six import iteritems
 
 ##########################################################################
 ## JSON serialization helpers
@@ -45,7 +47,6 @@ def dumps(content, **json_opts):
     opts = {
         'ensure_ascii': False,
         'cls': LazyJSONEncoder,
-        'encoding': 'utf-8',
     }
 
     opts.update(json_opts)
@@ -77,7 +78,7 @@ class LazyJSONEncoder(json.JSONEncoder):
 
         # Other Python Types:
         try:
-            return force_unicode(obj)
+            return force_text(obj)
         except Exception:
             pass
 
@@ -183,7 +184,7 @@ class JSONDetailView(JSONResponseMixin, BaseDetailView):
         The development version has a QuerySet.dict method-- but not 1.3, so
         we have to do this manually until the new version comes out.
         """
-        querydict = dict([(k, v) for k, v in request.GET.iteritems()])
+        querydict = dict([(k, v) for k, v in iteritems(request.GET)])
         self.kwargs.update(querydict)
         kwargs.update(querydict)
         return super(JSONDetailView, self).get(request, **kwargs)
