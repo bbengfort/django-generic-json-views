@@ -38,7 +38,9 @@ packages = find_packages(where=".", exclude=("tests", "docs", "venv"))
 requires = []
 with open('requirements.txt', 'r') as reqfile:
     for line in reqfile:
-        requires.append(line.strip())
+        line = line.strip()
+        if line and not line.startswith("#"):
+            requires.append(line)
 
 ## Define the classifiers
 classifiers = (
