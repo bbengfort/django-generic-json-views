@@ -17,6 +17,9 @@ Test the Generic views in the json_views library
 ## Imports
 ##########################################################################
 
+import os
+import sys
+import codecs
 import datetime
 import unittest
 
@@ -24,6 +27,7 @@ from json_views.views import *
 
 from django.contrib.auth.models import User
 from django.test import TestCase, RequestFactory
+
 
 ##########################################################################
 ## Fixtures
@@ -48,6 +52,21 @@ data = {
     }
 }
 
+FIXTURES  = os.path.join(os.path.dirname(__file__), "fixtures")
+PYVERSION = sys.version_info[0]
+
+def read_fixture(name, version=PYVERSION, fixtures=FIXTURES):
+    """
+    Reads data from a fixture with the correct Python version
+    """
+    name, ext = os.path.splitext(name)
+    name = "{}-py{}{}".format(name, version, ext)
+    path = os.path.join(fixtures, name)
+
+    with codecs.open(path, 'r', 'utf-8') as f:
+        return f.read()
+
+
 class BasicView(JSONDataView):
 
     def get_context_data(self, **kwargs):
@@ -65,13 +84,13 @@ class JSONSerializationTests(TestCase):
         """
         Assert that dumps can serialize JSON
         """
-        self.assertEqual(dumps(data), u'{"nested": {"complex": true, "value": 2153.23412}, "isadmin": false, "birthday": "1990-10-31", "groceries": ["apples", "bananas", "pears"], "name": "Sonny Bono", "registered": "2006-04-08 12:43:12", "balance": 235.03, "number": 42, "email": "john.doe@example.com"}')
+        self.assertEqual(len(dumps(data)), len(read_fixture('data.json')))
 
     def test_dumps_opts(self):
         """
         Assert that the dumps function passes kwargs
         """
-        self.assertEqual(dumps(data, indent=2), u'{\n  "nested": {\n    "complex": true, \n    "value": 2153.23412\n  }, \n  "isadmin": false, \n  "birthday": "1990-10-31", \n  "groceries": [\n    "apples", \n    "bananas", \n    "pears"\n  ], \n  "name": "Sonny Bono", \n  "registered": "2006-04-08 12:43:12", \n  "balance": 235.03, \n  "number": 42, \n  "email": "john.doe@example.com"\n}' )
+        self.assertEqual(dumps(data, indent=2, sort_keys=True), read_fixture('pretty-data.json'))
 
     @unittest.skip("pending implementation")
     def test_dumps_models(self):
@@ -149,4 +168,3 @@ class JSONPaginationTests(TestCase):
 
 class JSONFormViewTests(TestCase):
     pass
-

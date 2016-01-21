@@ -3,4 +3,6 @@
 *.pyc
 local_settings.py
 venv
+venv.py2
+venv.py3
 docs/site

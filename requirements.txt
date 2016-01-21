@@ -6,5 +6,5 @@ six==1.10
 #nose==1.3.4
 #coverage==3.7.1
 
-# Requirements for virtualenv
-#wsgiref==0.1.2
+# Requirements for pip
+#wheel==0.26.0

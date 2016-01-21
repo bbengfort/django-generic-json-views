@@ -1,5 +1,7 @@
 include README.md
 include LICENSE.txt
+include Makefile
 include requirements.txt
 recursive-include docs *
-prune docs/_build
+recursive-include tests *.py
+recursive-include tests *.json

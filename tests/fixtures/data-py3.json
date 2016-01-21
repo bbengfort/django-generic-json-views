@@ -1,0 +1,1 @@
+{"balance": 235.03, "birthday": "1990-10-31", "email": "john.doe@example.com", "groceries": ["apples", "bananas", "pears"], "isadmin": false, "name": "Sonny Bono", "nested": {"complex": true, "value": 2153.23412}, "number": 42, "registered": "2006-04-08 12:43:12"}
