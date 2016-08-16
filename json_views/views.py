@@ -26,6 +26,7 @@ from django.db.models.base import ModelBase
 from django.db.models import ManyToManyField
 from django.http import HttpResponseNotAllowed, HttpResponse
 from django.core.exceptions import ImproperlyConfigured
+from itertools import chain
 
 try:
     import json
@@ -89,7 +90,19 @@ class LazyJSONEncoder(json.JSONEncoder):
         tmp = {}
 
         many = [f.name for f in obj._meta.many_to_many]
-        for field in obj._meta.get_all_field_names():
+
+        # class._meta.get_all_field_names() has been deprecated in Django 1.10
+        # getting all_field_names according to the docs:
+        # https://docs.djangoproject.com/en/1.10/ref/models/meta/#migrating-from-the-old-api
+        # fully backward compatible
+        all_field_names = list(set(chain.from_iterable(
+            (field.name, field.attname) if hasattr(field, 'attname') else (field.name,)
+            for field in obj._meta.get_fields()
+            # For complete backwards compatibility, you may want to exclude
+            # GenericForeignKey from the results.
+            if not (field.many_to_one and field.related_model is None)
+        )))
+        for field in all_field_names:
             if len(many) > 0 and field in many:
                 many.remove(field)
                 tmp[field] = getattr(obj, field).all()
