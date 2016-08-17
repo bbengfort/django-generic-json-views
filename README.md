@@ -1,8 +1,7 @@
 # Django Generic JSON Views
 
 [![Stories in Ready](https://badge.waffle.io/bbengfort/django-generic-json-views.png?label=ready&title=Ready)](https://waffle.io/bbengfort/django-generic-json-views)
- [![Build Status](https://travis-ci.org/bbengfort/django-generic-json-views.svg)](https://travis-ci.org/bbengfort/django-generic-json-views) [![PyPi version](https://pypip.in/v/django-generic-json-views/badge.png)](https://crate.io/packages/django-generic-json-views/)
-[![PyPi downloads](https://pypip.in/d/django-generic-json-views/badge.png)](https://crate.io/packages/django-generic-json-views/)
+ [![Build Status](https://travis-ci.org/bbengfort/django-generic-json-views.svg)](https://travis-ci.org/bbengfort/django-generic-json-views) [![PyPi version](https://img.shields.io/pypi/v/django-generic-json-views.svg)](https://pypi.python.org/pypi/django-generic-json-views/)
 
 **Class based generic views that render JSON data.**
 
@@ -207,4 +206,6 @@ A couple of notes on pushing this software to PyPi:
 
 ## Contributors
 
-Thanks to [@philippbosch](https://github.com/philippbosch) for helping provide Python 3 support with later versions of Django. 
+Thanks to [@philippbosch](https://github.com/philippbosch) for helping provide Python 3 support with later versions of Django.
+
+Thanks to [@freeworlder](https://github.com/freeworlder) who provided Django 1.10 compatibility.
